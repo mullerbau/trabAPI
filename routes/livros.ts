@@ -35,11 +35,11 @@ router.post("/", async (req, res) => {
     return
   }
 
-  const { nome, quant } = valida.data
+  const { nome, autor ,quant } = valida.data
 
   try {
     const livro = await prisma.livro.create({
-      data: { nome, quant }
+      data: { nome, autor ,quant }
     })
     res.status(201).json(livro)
   } catch (error) {
@@ -69,12 +69,12 @@ router.put("/:id", async (req, res) => {
     return
   }
 
-  const { nome, quant } = valida.data
+  const { nome, autor, quant } = valida.data
 
   try {
     const livro = await prisma.livro.update({
       where: { id: Number(id) },
-      data: { nome, quant }
+      data: { nome, autor, quant }
     })
     res.status(200).json(livro)
   } catch (error) {

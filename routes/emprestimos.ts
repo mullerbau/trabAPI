@@ -8,8 +8,7 @@ const router = Router()
 
 const emprestimoSchema = z.object({
   alunoId: z.number(),
-  livroId: z.number(),
-  status: z.nativeEnum(statusEmprestimo),
+  livroId: z.number()
 })
 
 router.get("/", async (req, res) => {
@@ -34,7 +33,7 @@ router.post("/", async (req, res) => {
     return
   }
 
-  const { alunoId, livroId, status } = valida.data
+  const { alunoId, livroId } = valida.data
 
   // pesquisa para validar o aluno (recebe-se apenas id)
   const dadoAluno = await prisma.aluno.findUnique({
@@ -68,7 +67,7 @@ router.post("/", async (req, res) => {
         where: { id: livroId },
         data: { status: statusEmprestimo.PENDENTE, disponivel: false }
       })])
-    res.status(201).json({ emprestimo, aluno, status })
+    res.status(201).json({ emprestimo, aluno })
   } catch (error) {
     res.status(400).json({ error })
   }
