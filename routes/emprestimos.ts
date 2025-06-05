@@ -60,13 +60,13 @@ router.post("/", async (req, res) => {
       prisma.emprestimo.create({
         data: { 
           alunoId, 
-          livroId, 
+          livroId,
           dataDevolucao: new Date(Date.now() + 10) 
         }
       }),
       prisma.livro.update({
         where: { id: livroId },
-        data: { status: statusEmprestimo.PENDENTE }
+        data: { status: statusEmprestimo.PENDENTE, disponivel: false }
       })])
     res.status(201).json({ emprestimo, aluno, status })
   } catch (error) {
@@ -83,9 +83,9 @@ router.delete("/:id", async (req, res) => {
 
     const [emprestimo, aluno] = await prisma.$transaction([
       prisma.emprestimo.delete({ where: { id: Number(id) } }),
-      prisma.aluno.update({
+      prisma.livro.update({
         where: { id: emprestimoExcluido?.alunoId },
-        data: { saldo: { decrement: emprestimoExcluido?.valor } }
+        data: { status: statusEmprestimo.DEVOLVIDO, disponivel: true }
       })])
 
     res.status(200).json({ emprestimo, aluno })

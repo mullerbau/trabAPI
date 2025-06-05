@@ -24,10 +24,12 @@ model Aluno {
 model Livro {
   id           Int         @id @default(autoincrement())
   nome         String      @db.VarChar(30)
+  autor        String      @db.VarChar(30)
   quant        Int         @db.SmallInt  
   status       statusEmprestimo @default(DEVOLVIDO) 
+  disponivel   Boolean     @default(true)
   emprestimo   Emprestimo[]
-  estoque      Estoque[]
+
   @@map("livros")
 }
 
@@ -49,22 +51,4 @@ model Emprestimo {
   obs            String?     @db.Text
   
   @@map("emprestimo")
-}
-
-model Estoque {
-  id         Int               @id @default(autoincrement())
-  livro      Livro             @relation(fields: [livroId], references: [id])
-  livroId    Int
-  tipo       TipoMovimentacao
-  quantidade Int
-  data       DateTime          @default(now())
-  observacao String?
-
-  @@map("estoque")
-}
-
-enum TipoMovimentacao {
-  ENTRADA
-  SAIDA
-  AJUSTE
 }

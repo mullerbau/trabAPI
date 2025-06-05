@@ -9,6 +9,9 @@ const router = Router()
 const livroSchema = z.object({
   nome: z.string().min(4,
     { message: "Nome do livro deve possuir, no mínimo, 4 caracteres" }),
+  autor: z.string().min(3,
+    { message: "Autor deve conter mais de 3 letras"}
+  ),
   quant: z.number().min(1,
     { message: "Deve haver pelo menos 1 livro para cadastro"}
   )
