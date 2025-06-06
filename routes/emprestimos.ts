@@ -46,12 +46,26 @@ router.post("/", async (req, res) => {
   }
 
   const dadoLivro = await prisma.livro.findUnique({
-    where: { id: livroId }
+      where: { id: livroId,
+      disponivel: true
+    }
   })
 
-  if (!dadoLivro) {
-    res.status(400).json({ erro: "Erro... Livro não encontrado"})
+  if (!dadoLivro?.disponivel) {
+    res.status(400).json({ erro: "Erro... Livro indisponível para empréstimo"})
     return
+  }
+
+  const jaEmprestado = await prisma.emprestimo.findFirst({
+    where: {
+      alunoId,
+      livroId,
+      dataDevolvido: null
+    }
+  })
+
+  if (jaEmprestado) {
+    return res.status(400).json({ erro: "Este aluno já possui este livro emprestado"})
   }
 
   try {
@@ -83,7 +97,7 @@ router.delete("/:id", async (req, res) => {
     const [emprestimo, aluno] = await prisma.$transaction([
       prisma.emprestimo.delete({ where: { id: Number(id) } }),
       prisma.livro.update({
-        where: { id: emprestimoExcluido?.alunoId },
+        where: { id: emprestimoExcluido?.livroId },
         data: { status: statusEmprestimo.DEVOLVIDO, disponivel: true }
       })])
 

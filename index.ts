@@ -1,9 +1,10 @@
 import express from 'express'
+import dotenv from "dotenv"
 import routesAlunos from './routes/alunos'
 import routesLivros from './routes/livros'
 import routesEmprestimo from './routes/emprestimos'
 
-
+dotenv.config()
 const app = express()
 const port = 3000
 
